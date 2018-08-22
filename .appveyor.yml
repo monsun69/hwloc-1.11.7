@@ -10,7 +10,7 @@ clone_folder: c:\hwloc
 build_script:
   - cd c:\hwloc
   - mkdir build
-  - set PATH=%PATH%;C:\msys64;C:\msys64\usr\bin;
+  - set PATH=%PATH%;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\usr\bin;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\bin
   - bash -c "cd /c/hwloc/;ls -la;./configure --enable-static --host=x86_64-w64-mingw32;make;make install;make check"
 
 artifacts:
