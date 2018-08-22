@@ -13,6 +13,7 @@ environment:
 build_script:
   - cd c:\hwloc
   - set PATH=%PATH%;C:\msys64;C:\msys64\usr\bin;
+  - bash -v
   - configure --prefix=%prefix% --enable-static --host=x86_64-w64-mingw32
   - make
   - make install
