@@ -1,8 +1,8 @@
 .\" -*- nroff -*-
-.\" Copyright © 2010-2016 Inria.  All rights reserved.
+.\" Copyright © 2010-2018 Inria.  All rights reserved.
 .\" Copyright © 2009 Cisco Systems, Inc.  All rights reserved.
 .\" See COPYING in top-level directory.
-.TH HWLOC-CALC "1" "#HWLOC_DATE#" "#PACKAGE_VERSION#" "#PACKAGE_NAME#"
+.TH HWLOC-CALC "1" "%HWLOC_DATE%" "%PACKAGE_VERSION%" "%PACKAGE_NAME%"
 .SH NAME
 hwloc-calc \- Operate on cpu mask strings and objects
 .
@@ -42,6 +42,15 @@ Use OS/physical indexes instead of logical indexes for output.
 .TP
 \fB\-\-lo\fR \fB\-\-logical\-output\fR
 Use logical indexes instead of physical/OS indexes for output (default, except for cpusets which are always physical).
+.TP
+\fB\-n\fR \fB\-\-nodeset\fR
+Interpret both input and output sets as nodesets instead of CPU sets.
+.TP
+\fB\-\-no\fR \fB\-\-nodeset\-output\fR
+Report nodesets instead of CPU sets.
+.TP
+\fB\-\-ni\fR \fB\-\-nodeset\-input\fR
+Interpret input sets as nodesets instead of CPU sets.
 .TP
 \fB\-N \-\-number-of <type|depth>\fR
 Report the number of objects of the given type or depth that intersect the CPU set.
@@ -103,10 +112,12 @@ is used.  XML support must have been compiled in to hwloc for this
 option to be usable.
 .TP
 \fB\-i\fR <directory>, \fB\-\-input\fR <directory>
-Read topology from the chroot specified by <directory> (instead of
-discovering the topology on the local machine).  This option is
-generally only available on Linux.  The chroot was usually created
-by gathering another machine topology with hwloc-gather-topology.
+Read topology from <directory> instead of discovering the topology
+of the local machine.
+On Linux, the directory may contain the topology files
+gathered from another machine topology with hwloc-gather-topology.
+On x86, the directory may contain a cpuid dump gathered
+with hwloc-gather-cpuid.
 .TP
 \fB\-i\fR <specification>, \fB\-\-input\fR <specification>
 Simulate a fake hierarchy (instead of discovering the topology on the
@@ -115,8 +126,8 @@ contain two NUMA nodes with 3 processing units in each of them.
 The <specification> string must end with a number of PUs.
 .TP
 \fB\-\-if\fR <format>, \fB\-\-input\-format\fR <format>
-Enforce the input in the given format, among \fBxml\fR, \fBfsroot\fR
-and \fBsynthetic\fR.
+Enforce the input in the given format, among \fBxml\fR, \fBfsroot\fR,
+\fBcpuid\fR and \fBsynthetic\fR.
 .TP
 \fB\-q\fR \fB\-\-quiet\fR
 Hide non-fatal error messages.
@@ -127,7 +138,9 @@ Verbose output.
 .TP
 \fB\-\-version\fR
 Report version and exit.
-.
+.TP
+\fB\-h\fR \fB\-\-help\fR
+Display help message and exit.
 .
 .\" **************************
 .\"    Description Section
@@ -289,5 +302,5 @@ hwloc-calc will return nonzero if any kind of error occurs, such as
 .SH SEE ALSO
 .
 .ft R
-hwloc(7), lstopo(1), hwloc-info(1), hwloc-gather-topology(1)
+hwloc(7), lstopo(1), hwloc-info(1)
 .sp

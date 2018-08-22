@@ -1,7 +1,7 @@
 /* This example program looks for caches shared between this process
  * and another one based on their current binding.
  *
- * Copyright © 2014 Inria.  All rights reserved.
+ * Copyright © 2014-2015 Inria.  All rights reserved.
  * See COPYING in top-level directory.
  */
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "failed to initialize the topology\n");
     return EXIT_FAILURE;
   }
-  hwloc_topology_set_flags(topology, HWLOC_TOPOLOGY_FLAG_ICACHES);
+  hwloc_topology_set_icache_types_filter(topology, HWLOC_TYPE_FILTER_KEEP_ALL);
   err = hwloc_topology_load(topology);
   if (err < 0) {
     fprintf(stderr, "failed to load the topology\n");
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     hwloc_topology_destroy(topology);
     return EXIT_FAILURE;
   }
-    
+
   /* find where the other process is running */
   hisset = hwloc_bitmap_alloc();
   if (!hisset) {
@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
     hwloc_topology_destroy(topology);
     return EXIT_FAILURE;
   }
+  /* FIXME: on windows, hispid should be replaced with OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, hispid); */
   err = hwloc_get_proc_cpubind(topology, hispid, hisset, 0);
   if (err < 0) {
     fprintf(stderr, "failed to get his binding\n");
@@ -80,7 +81,7 @@ int main(int argc, char *argv[])
 
   /* display parents of type cache */
   while (obj) {
-    if (obj->type == HWLOC_OBJ_CACHE) {
+    if (hwloc_obj_type_is_cache(obj->type)) {
       char type[64];
       char attr[64];
       hwloc_obj_type_snprintf(type, sizeof(type), obj, 0);

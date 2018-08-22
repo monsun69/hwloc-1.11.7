@@ -5,11 +5,11 @@
 # major, minor, and release are generally combined in the form
 # <major>.<minor>.<release>.  If release is zero, then it is omitted.
 
-# Please update HWLOC_VERSION in contrib/windows/private_config.h too.
+# Please update HWLOC_VERSION* in contrib/windows/hwloc_config.h too.
 
-major=1
-minor=11
-release=7
+major=2
+minor=1
+release=0
 
 # greek is used for alpha or beta release tags.  If it is non-empty,
 # it will be appended to the version number.  It does not have to be
@@ -18,16 +18,16 @@ release=7
 # requirement is that it must be entirely printable ASCII characters
 # and have no white space.
 
-greek=
+greek=a1
 
 # The date when this release was created
 
-date="Apr 27, 2017"
+date="Unreleased developer copy"
 
 # If snapshot=1, then use the value from snapshot_version as the
 # entire hwloc version (i.e., ignore major, minor, release, and
 # greek).  This is only set to 1 when making snapshot tarballs.
-snapshot=0
+snapshot=1
 snapshot_version=${major}.${minor}.${release}${greek}-git
 
 # The shared library version of hwloc's public library.  This version
@@ -41,6 +41,7 @@ snapshot_version=${major}.${minor}.${release}${greek}-git
 # 2. Version numbers are described in the Libtool current:revision:age
 # format.
 
-libhwloc_so_version=12:4:7
+libhwloc_so_version=0:0:0
+libnetloc_so_version=0:0:0
 
 # Please also update the <TargetName> lines in contrib/windows/libhwloc.vcxproj
