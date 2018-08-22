@@ -22,9 +22,8 @@ build_script:
   - mkdir build
   - set PATH=%EXTRA_PATH%;%PATH%
   - bash configure --enable-static --host=x86_64-w64-mingw32
-  - mingw32-make
-  - mingw32-make install
-  - mingw32-make check
+  - bash make
+  - bash -make install
   - file %LAUNCH_PATH:\=/%*
 
 artifacts:
