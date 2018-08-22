@@ -13,5 +13,7 @@ build_script:
   - make LDFLAGS=-all-static
   
 artifacts:
-  - path: .
-    name: project_data
+  - path: lib/*
+    name: lib
+  - path: include/*
+    name: include    
