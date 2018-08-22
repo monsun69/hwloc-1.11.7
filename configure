@@ -10991,7 +10991,7 @@ done
 
 
     old_CPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0601"
+    CPPFLAGS="$CPPFLAGS -D_WIN32_WINNT=0x0601 -D_POSIX_C_SOURCE=199309L"
     ac_fn_c_check_type "$LINENO" "KAFFINITY" "ac_cv_type_KAFFINITY" "#include <windows.h>
 "
 if test "x$ac_cv_type_KAFFINITY" = xyes; then :
@@ -25088,7 +25088,7 @@ fi
   case $lt_cv_dlopen in
   dlopen)
     save_CPPFLAGS=$CPPFLAGS
-    test yes = "$ac_cv_header_dlfcn_h" && CPPFLAGS="$CPPFLAGS -DHAVE_DLFCN_H"
+    test yes = "$ac_cv_header_dlfcn_h" && CPPFLAGS="$CPPFLAGS -DHAVE_DLFCN_H -D_POSIX_C_SOURCE=199309L"
 
     save_LDFLAGS=$LDFLAGS
     wl=$lt_prog_compiler_wl eval LDFLAGS=\"\$LDFLAGS $export_dynamic_flag_spec\"
