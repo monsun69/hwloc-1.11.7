@@ -11,7 +11,7 @@ init:
   - cmd:
 
 environment:
-matrix:
+  matrix:
   - EXTRA_PATH: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin\
     LAUNCH_BUILD: ./configure --enable-static --host=x86_64-w64-mingw32;mingw32-make;mingw32-make install;mingw32-make check
     LAUNCH_PATH: build\
