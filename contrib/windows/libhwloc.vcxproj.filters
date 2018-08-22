@@ -15,55 +15,58 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\hwloc\base64.c">
+    <ClCompile Include="..\..\src\base64.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\bind.c">
+    <ClCompile Include="..\..\src\bind.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\bitmap.c">
+    <ClCompile Include="..\..\src\bitmap.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\components.c">
+    <ClCompile Include="..\..\src\components.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\distances.c">
+    <ClCompile Include="..\..\src\distances.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\diff.c">
+    <ClCompile Include="..\..\src\diff.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\misc.c">
+    <ClCompile Include="..\..\src\misc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\pci-common.c">
+    <ClCompile Include="..\..\src\pci-common.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\topology-noos.c">
+    <ClCompile Include="..\..\src\topology-custom.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\topology-synthetic.c">
+    <ClCompile Include="..\..\src\topology-noos.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\topology-windows.c">
+    <ClCompile Include="..\..\src\topology-synthetic.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\topology-x86.c">
+    <ClCompile Include="..\..\src\topology-windows.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\topology-xml-nolibxml.c">
+    <ClCompile Include="..\..\src\topology-x86.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\topology-xml.c">
+    <ClCompile Include="..\..\src\topology-xml-nolibxml.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\topology.c">
+    <ClCompile Include="..\..\src\topology-xml.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\traversal.c">
+    <ClCompile Include="..\..\src\topology.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\hwloc\dolib.c">
+    <ClCompile Include="..\..\src\traversal.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\dolib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,6 +78,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\hwloc\helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\hwloc\myriexpress.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\hwloc\openfabrics-verbs.h">

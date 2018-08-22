@@ -4,22 +4,17 @@
 #
 # Copyright © 2009-2014 Inria.  All rights reserved.
 # Copyright © 2009, 2011 Université Bordeaux
-# Copyright © 2014 Cisco Systems, Inc.  All rights reserved.
 # See COPYING in top-level directory.
 #
 
 HWLOC_top_builddir="@HWLOC_top_builddir@"
-builddir="$HWLOC_top_builddir/utils/lstopo"
-lstopo="$builddir/lstopo-no-graphics"
+lstopo="$HWLOC_top_builddir/utils/lstopo/lstopo-no-graphics"
 
-HWLOC_PLUGINS_PATH=${HWLOC_top_builddir}/hwloc
+HWLOC_PLUGINS_PATH=${HWLOC_top_builddir}/src
 export HWLOC_PLUGINS_PATH
 
 HWLOC_DEBUG_FAKE_COMPONENT=1
 export HWLOC_DEBUG_FAKE_COMPONENT
-
-HWLOC_DEBUG_CHECK=1
-export HWLOC_DEBUG_CHECK
 
 : ${TMPDIR=/tmp}
 {

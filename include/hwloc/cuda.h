@@ -1,5 +1,5 @@
 /*
- * Copyright © 2010-2017 Inria.  All rights reserved.
+ * Copyright © 2010-2016 Inria.  All rights reserved.
  * Copyright © 2010-2011 Université Bordeaux
  * Copyright © 2011 Cisco Systems, Inc.  All rights reserved.
  * See COPYING in top-level directory.
@@ -96,6 +96,7 @@ hwloc_cuda_get_device_cpuset(hwloc_topology_t topology __hwloc_attribute_unused,
   /* If we're on Linux, use the sysfs mechanism to get the local cpus */
 #define HWLOC_CUDA_DEVICE_SYSFS_PATH_MAX 128
   char path[HWLOC_CUDA_DEVICE_SYSFS_PATH_MAX];
+  FILE *sysfile = NULL;
   int domainid, busid, deviceid;
 
   if (hwloc_cuda_get_device_pci_ids(topology, cudevice, &domainid, &busid, &deviceid))
@@ -107,9 +108,15 @@ hwloc_cuda_get_device_cpuset(hwloc_topology_t topology __hwloc_attribute_unused,
   }
 
   sprintf(path, "/sys/bus/pci/devices/%04x:%02x:%02x.0/local_cpus", domainid, busid, deviceid);
-  if (hwloc_linux_read_path_as_cpumask(path, set) < 0
+  sysfile = fopen(path, "r");
+  if (!sysfile)
+    return -1;
+
+  if (hwloc_linux_parse_cpumap_file(sysfile, set) < 0
       || hwloc_bitmap_iszero(set))
     hwloc_bitmap_copy(set, hwloc_topology_get_complete_cpuset(topology));
+
+  fclose(sysfile);
 #else
   /* Non-Linux systems simply get a full cpuset */
   hwloc_bitmap_copy(set, hwloc_topology_get_complete_cpuset(topology));
@@ -144,14 +151,12 @@ hwloc_cuda_get_device_pcidev(hwloc_topology_t topology, CUdevice cudevice)
  * CUDA device \p cudevice. Return NULL if there is none.
  *
  * Topology \p topology and device \p cudevice must match the local machine.
- * I/O devices detection and the CUDA component must be enabled in the topology.
+ * I/O devices detection and the NVML component must be enabled in the topology.
  * If not, the locality of the object may still be found using
  * hwloc_cuda_get_device_cpuset().
  *
- * \note This function cannot work if PCI devices are filtered out.
- *
  * \note The corresponding hwloc PCI device may be found by looking
- * at the result parent pointer (unless PCI devices are filtered out).
+ * at the result parent pointer.
  */
 static __hwloc_inline hwloc_obj_t
 hwloc_cuda_get_device_osdev(hwloc_topology_t topology, CUdevice cudevice)
@@ -174,7 +179,6 @@ hwloc_cuda_get_device_osdev(hwloc_topology_t topology, CUdevice cudevice)
 		    && (int) pcidev->attr->pcidev.dev == dev
 		    && pcidev->attr->pcidev.func == 0)
 			return osdev;
-		/* if PCI are filtered out, we need a info attr to match on */
 	}
 
 	return NULL;
@@ -191,7 +195,7 @@ hwloc_cuda_get_device_osdev(hwloc_topology_t topology, CUdevice cudevice)
  * I/O devices detection and the CUDA component must be enabled in the topology.
  *
  * \note The corresponding PCI device object can be obtained by looking
- * at the OS device parent object (unless PCI devices are filtered out).
+ * at the OS device parent object.
  *
  * \note This function is identical to hwloc_cudart_get_device_osdev_by_index().
  */

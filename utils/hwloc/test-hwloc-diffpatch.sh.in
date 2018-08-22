@@ -3,22 +3,16 @@
 
 #
 # Copyright © 2009-2013 Inria.  All rights reserved.
-# Copyright © 2014 Cisco Systems, Inc.  All rights reserved.
 # See COPYING in top-level directory.
 #
 
-HWLOC_top_srcdir="@HWLOC_top_srcdir@"
 HWLOC_top_builddir="@HWLOC_top_builddir@"
-srcdir="$HWLOC_top_srcdir/utils/hwloc"
-builddir="$HWLOC_top_builddir/utils/hwloc"
-diff="$builddir/hwloc-diff"
-patch="$builddir/hwloc-patch"
+diff="$HWLOC_top_builddir/utils/hwloc/hwloc-diff"
+patch="$HWLOC_top_builddir/utils/hwloc/hwloc-patch"
+HWLOC_top_srcdir="@HWLOC_top_srcdir@"
 
-HWLOC_PLUGINS_PATH=${HWLOC_top_builddir}/hwloc
+HWLOC_PLUGINS_PATH=${HWLOC_top_builddir}/src
 export HWLOC_PLUGINS_PATH
-
-HWLOC_DEBUG_CHECK=1
-export HWLOC_DEBUG_CHECK
 
 if test x@HWLOC_XML_LOCALIZED@ = x1; then
   # make sure we use default numeric formats
@@ -45,15 +39,14 @@ output2="test-hwloc-diffpatch.output2"
 
 set -e
 
-$diff $srcdir/test-hwloc-diffpatch.input1 \
-    $srcdir/test-hwloc-diffpatch.input2 > $diffoutput
-cp $srcdir/test-hwloc-diffpatch.input1 .
-#cat $diffoutput | $patch $srcdir/test-hwloc-diffpatch.input1 - $output1
+$diff $HWLOC_top_srcdir/utils/hwloc/test-hwloc-diffpatch.input1 $HWLOC_top_srcdir/utils/hwloc/test-hwloc-diffpatch.input2 > $diffoutput
+cp $HWLOC_top_srcdir/utils/hwloc/test-hwloc-diffpatch.input1 .
+#cat $diffoutput | $patch $HWLOC_top_srcdir/utils/hwloc/test-hwloc-diffpatch.input1 - $output1
 cat $diffoutput | $patch refname - $output1
-$patch -R $srcdir/test-hwloc-diffpatch.input2 $diffoutput $output2
+$patch -R $HWLOC_top_srcdir/utils/hwloc/test-hwloc-diffpatch.input2 $diffoutput $output2
 
-diff -u $srcdir/test-hwloc-diffpatch.input1 "$output2"
-diff -u $srcdir/test-hwloc-diffpatch.input2 "$output1"
+diff -u $HWLOC_top_srcdir/utils/hwloc/test-hwloc-diffpatch.input1 "$output2"
+diff -u $HWLOC_top_srcdir/utils/hwloc/test-hwloc-diffpatch.input2 "$output1"
 
 cd ..
 rm -rf "$tmp"

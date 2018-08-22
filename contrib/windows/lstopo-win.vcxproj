@@ -29,7 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
     <EmbedManifest>true</EmbedManifest>
-    <TargetName>$(ProjectName)-12</TargetName>
+    <TargetName>$(ProjectName)-5</TargetName>
     <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
@@ -68,6 +68,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\utils\lstopo\lstopo.c" />
     <ClCompile Include="..\..\utils\lstopo\lstopo-ascii.c" />
+    <ClCompile Include="..\..\utils\lstopo\lstopo-color.c" />
     <ClCompile Include="..\..\utils\lstopo\lstopo-draw.c" />
     <ClCompile Include="..\..\utils\lstopo\lstopo-fig.c" />
     <ClCompile Include="..\..\utils\lstopo\lstopo-text.c" />
@@ -80,6 +81,7 @@
     <ClInclude Include="..\..\include\hwloc.h" />
     <ClInclude Include="..\..\include\hwloc\bitmap.h" />
     <ClInclude Include="..\..\include\hwloc\helper.h" />
+    <ClInclude Include="..\..\include\hwloc\myriexpress.h" />
     <ClInclude Include="..\..\include\hwloc\openfabrics-verbs.h" />
     <ClInclude Include="..\..\include\hwloc\plugins.h" />
     <ClInclude Include="..\..\include\hwloc\rename.h" />

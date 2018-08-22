@@ -13,6 +13,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hwloc-annotate", "hwloc-ann
 		{9DE76C6D-4773-4766-9F93-69C56166CB8D} = {9DE76C6D-4773-4766-9F93-69C56166CB8D}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hwloc-assembler", "hwloc-assembler.vcxproj", "{9DE76C6D-4773-4766-9F93-69C56166CB90}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9DE76C6D-4773-4766-9F93-69C56166CB8D} = {9DE76C6D-4773-4766-9F93-69C56166CB8D}
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hwloc-bind", "hwloc-bind.vcxproj", "{9DE76C6D-4773-4766-9F93-69C56166CB91}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DE76C6D-4773-4766-9F93-69C56166CB8D} = {9DE76C6D-4773-4766-9F93-69C56166CB8D}
@@ -24,6 +29,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hwloc-calc", "hwloc-calc.vc
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hwloc-diff", "hwloc-diff.vcxproj", "{9DE76C6D-4773-4766-9F93-69C56166CB93}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9DE76C6D-4773-4766-9F93-69C56166CB8D} = {9DE76C6D-4773-4766-9F93-69C56166CB8D}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hwloc-distances", "hwloc-distances.vcxproj", "{9DE76C6D-4773-4766-9F93-69C56166CB94}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9DE76C6D-4773-4766-9F93-69C56166CB8D} = {9DE76C6D-4773-4766-9F93-69C56166CB8D}
 	EndProjectSection
@@ -53,11 +63,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lstopo-win", "lstopo-win.vc
 		{9DE76C6D-4773-4766-9F93-69C56166CB8D} = {9DE76C6D-4773-4766-9F93-69C56166CB8D}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hwloc-gather-cpuid", "hwloc-gather-cpuid.vcxproj", "{9DE76C6D-4773-4766-9F93-69C56166CB9A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9DE76C6D-4773-4766-9F93-69C56166CB8D} = {9DE76C6D-4773-4766-9F93-69C56166CB8D}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Release|x64 = Release|x64
@@ -74,6 +79,9 @@ Global
 		{9DE76C6D-4773-4766-9F93-69C56166CB8F}.Release|x64.ActiveCfg = Release|x64
 		{9DE76C6D-4773-4766-9F93-69C56166CB8F}.Release|x64.Build.0 = Release|x64
 		{9DE76C6D-4773-4766-9F93-69C56166CB8F}.ReleaseStatic|x64.ActiveCfg = Release|x64
+		{9DE76C6D-4773-4766-9F93-69C56166CB90}.Release|x64.ActiveCfg = Release|x64
+		{9DE76C6D-4773-4766-9F93-69C56166CB90}.Release|x64.Build.0 = Release|x64
+		{9DE76C6D-4773-4766-9F93-69C56166CB90}.ReleaseStatic|x64.ActiveCfg = Release|x64
 		{9DE76C6D-4773-4766-9F93-69C56166CB91}.Release|x64.ActiveCfg = Release|x64
 		{9DE76C6D-4773-4766-9F93-69C56166CB91}.Release|x64.Build.0 = Release|x64
 		{9DE76C6D-4773-4766-9F93-69C56166CB91}.ReleaseStatic|x64.ActiveCfg = Release|x64
@@ -83,6 +91,9 @@ Global
 		{9DE76C6D-4773-4766-9F93-69C56166CB93}.Release|x64.ActiveCfg = Release|x64
 		{9DE76C6D-4773-4766-9F93-69C56166CB93}.Release|x64.Build.0 = Release|x64
 		{9DE76C6D-4773-4766-9F93-69C56166CB93}.ReleaseStatic|x64.ActiveCfg = Release|x64
+		{9DE76C6D-4773-4766-9F93-69C56166CB94}.Release|x64.ActiveCfg = Release|x64
+		{9DE76C6D-4773-4766-9F93-69C56166CB94}.Release|x64.Build.0 = Release|x64
+		{9DE76C6D-4773-4766-9F93-69C56166CB94}.ReleaseStatic|x64.ActiveCfg = Release|x64
 		{9DE76C6D-4773-4766-9F93-69C56166CB95}.Release|x64.ActiveCfg = Release|x64
 		{9DE76C6D-4773-4766-9F93-69C56166CB95}.Release|x64.Build.0 = Release|x64
 		{9DE76C6D-4773-4766-9F93-69C56166CB95}.ReleaseStatic|x64.ActiveCfg = Release|x64

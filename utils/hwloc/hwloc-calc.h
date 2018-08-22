@@ -1,6 +1,6 @@
 /*
  * Copyright © 2009 CNRS
- * Copyright © 2009-2018 Inria.  All rights reserved.
+ * Copyright © 2009-2017 Inria.  All rights reserved.
  * Copyright © 2009-2012 Université Bordeaux
  * Copyright © 2011 Cisco Systems, Inc.  All rights reserved.
  * See COPYING in top-level directory.
@@ -9,8 +9,9 @@
 #ifndef HWLOC_CALC_H
 #define HWLOC_CALC_H
 
+#include <private/private.h>
+#include <private/misc.h>
 #include <hwloc.h>
-#include <private/misc.h> /* for HWLOC_OBJ_TYPE_NONE */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -23,7 +24,7 @@
 
 struct hwloc_calc_location_context_s {
   hwloc_topology_t topology;
-  int topodepth;
+  unsigned topodepth;
   int only_hbm; /* -1 for everything, 0 for only non-HBM, 1 for only HBM numa nodes */
   int logical;
   int verbose;
@@ -79,7 +80,7 @@ hwloc_calc_append_set(hwloc_bitmap_t set, hwloc_const_bitmap_t newset,
 static __hwloc_inline unsigned
 hwloc_calc_get_nbobjs_inside_sets_by_depth(struct hwloc_calc_location_context_s *lcontext,
 					   hwloc_const_bitmap_t cpuset, hwloc_const_bitmap_t nodeset,
-					   int depth)
+					   unsigned depth)
 {
   hwloc_topology_t topology = lcontext->topology;
   int only_hbm = lcontext->only_hbm;
@@ -88,14 +89,16 @@ hwloc_calc_get_nbobjs_inside_sets_by_depth(struct hwloc_calc_location_context_s 
   while ((obj = hwloc_get_next_obj_by_depth(topology, depth, obj)) != NULL) {
     if (!hwloc_bitmap_isincluded(obj->cpuset, cpuset))
       continue;
-    if (!hwloc_bitmap_isincluded(obj->nodeset, nodeset))
+    if (nodeset && !hwloc_bitmap_isincluded(obj->nodeset, nodeset))
       continue;
-    if (hwloc_bitmap_iszero(obj->cpuset) && hwloc_bitmap_iszero(obj->nodeset))
+    if (hwloc_bitmap_iszero(obj->cpuset)
+	&& (!nodeset || hwloc_bitmap_iszero(obj->nodeset)))
       /* ignore objects with empty sets (both can be empty when outside of cgroup) */
       continue;
     if (only_hbm >= 0 && obj->type == HWLOC_OBJ_NUMANODE) {
       /* filter on hbm */
-      int obj_is_hbm = obj->subtype && !strcmp(obj->subtype, "MCDRAM");
+      const char *info = hwloc_obj_get_info_by_name(obj, "Type");
+      int obj_is_hbm = info && !strcmp(info, "MCDRAM");
       if (only_hbm != obj_is_hbm)
 	continue;
     }
@@ -107,7 +110,7 @@ hwloc_calc_get_nbobjs_inside_sets_by_depth(struct hwloc_calc_location_context_s 
 static __hwloc_inline hwloc_obj_t
 hwloc_calc_get_obj_inside_sets_by_depth(struct hwloc_calc_location_context_s *lcontext,
 					hwloc_const_bitmap_t cpuset, hwloc_const_bitmap_t nodeset,
-					int depth, unsigned ind)
+					unsigned depth, unsigned ind)
 {
   hwloc_topology_t topology = lcontext->topology;
   int only_hbm = lcontext->only_hbm;
@@ -117,14 +120,16 @@ hwloc_calc_get_obj_inside_sets_by_depth(struct hwloc_calc_location_context_s *lc
   while ((obj = hwloc_get_next_obj_by_depth(topology, depth, obj)) != NULL) {
     if (!hwloc_bitmap_isincluded(obj->cpuset, cpuset))
       continue;
-    if (!hwloc_bitmap_isincluded(obj->nodeset, nodeset))
+    if (nodeset && !hwloc_bitmap_isincluded(obj->nodeset, nodeset))
       continue;
-    if (hwloc_bitmap_iszero(obj->cpuset) && hwloc_bitmap_iszero(obj->nodeset))
+    if (hwloc_bitmap_iszero(obj->cpuset)
+	&& (!nodeset || hwloc_bitmap_iszero(obj->nodeset)))
       /* ignore objects with empty sets (both can be empty when outside of cgroup) */
       continue;
     if (only_hbm >= 0 && obj->type == HWLOC_OBJ_NUMANODE) {
       /* filter on hbm */
-      int obj_is_hbm = obj->subtype && !strcmp(obj->subtype, "MCDRAM");
+      const char *info = hwloc_obj_get_info_by_name(obj, "Type");
+      int obj_is_hbm = info && !strcmp(info, "MCDRAM");
       if (only_hbm != obj_is_hbm)
 	continue;
     }
@@ -133,11 +138,72 @@ hwloc_calc_get_obj_inside_sets_by_depth(struct hwloc_calc_location_context_s *lc
 	return obj;
       i++;
     } else {
-      if (obj->os_index == ind)
+      if (obj->os_index == i)
 	return obj;
     }
   }
   return NULL;
+}
+
+static __hwloc_inline int
+hwloc_calc_depth_of_type(struct hwloc_calc_location_context_s *lcontext,
+			 hwloc_obj_type_t type,
+			 int depthattr, hwloc_obj_cache_type_t cachetype /* -1 if not specified */)
+{
+  hwloc_topology_t topology = lcontext->topology;
+  int verbose = lcontext->verbose;
+  int depth;
+  int i;
+
+  if (depthattr == -1) {
+    hwloc_obj_type_t realtype;
+    /* matched a type without depth attribute, try to get the depth from the type if it exists and is unique */
+    depth = hwloc_get_type_or_above_depth(topology, type);
+    if (depth == HWLOC_TYPE_DEPTH_MULTIPLE) {
+      if (verbose >= 0)
+	fprintf(stderr, "type %s has multiple possible depths\n", hwloc_obj_type_string(type));
+      return -1;
+    } else if (depth == HWLOC_TYPE_DEPTH_UNKNOWN) {
+      if (verbose >= 0)
+	fprintf(stderr, "type %s isn't available\n", hwloc_obj_type_string(type));
+      return -1;
+    }
+    realtype = hwloc_get_depth_type(topology, depth);
+    if (type != realtype && verbose > 0)
+      fprintf(stderr, "using type %s (depth %d) instead of %s\n",
+	      hwloc_obj_type_string(realtype), depth, hwloc_obj_type_string(type));
+    return depth;
+
+  } else {
+    /* matched a type with a depth attribute, look at the first object of each level to find the depth */
+    if (type == HWLOC_OBJ_GROUP)
+      for(i=0; ; i++) {
+	hwloc_obj_t obj = hwloc_get_obj_by_depth(topology, i, 0);
+	if (!obj) {
+	  if (verbose >= 0)
+	    fprintf(stderr, "Group with custom depth %d does not exist\n",
+		    depthattr);
+	  return -1;
+	}
+	if (obj->type == type
+	    && (unsigned) depthattr == obj->attr->group.depth)
+	  return i;
+      }
+    else if (type == HWLOC_OBJ_CACHE) {
+      depth = hwloc_get_cache_type_depth(topology, depthattr, cachetype);
+      if (verbose >= 0) {
+	if (depth == HWLOC_TYPE_DEPTH_UNKNOWN)
+	  fprintf(stderr, "Cache with custom depth %d and type %d does not exist\n", depthattr, cachetype);
+	else if (depth == HWLOC_TYPE_DEPTH_MULTIPLE)
+	  fprintf(stderr, "Cache with custom depth %d and type %d has multiple possible depths\n", depthattr, cachetype);
+      }
+      return depth;
+    } else
+      assert(0);
+  }
+
+  /* cannot come here, we'll exit above first */
+  return -1;
 }
 
 static __hwloc_inline int
@@ -146,10 +212,12 @@ hwloc_calc_parse_depth_prefix(struct hwloc_calc_location_context_s *lcontext,
 			      hwloc_obj_type_t *typep)
 {
   hwloc_topology_t topology = lcontext->topology;
-  int topodepth = lcontext->topodepth;
+  unsigned topodepth = lcontext->topodepth;
   int verbose = lcontext->verbose;
   char typestring[20+1]; /* large enough to store all type names, even with a depth attribute */
   hwloc_obj_type_t type;
+  hwloc_obj_cache_type_t cachetypeattr;
+  int depthattr;
   int depth;
   char *end;
   int err;
@@ -163,16 +231,18 @@ hwloc_calc_parse_depth_prefix(struct hwloc_calc_location_context_s *lcontext,
   typestring[typelen] = '\0';
 
   /* try to match a type name */
-  err = hwloc_type_sscanf_as_depth(typestring, &type, topology, &depth);
+  err = hwloc_obj_type_sscanf(typestring, &type, &depthattr, &cachetypeattr, sizeof(cachetypeattr));
   if (!err) {
+    if (type == HWLOC_OBJ_MISC)
+      return -1;
     *typep = type;
-    return depth;
+    return hwloc_calc_depth_of_type(lcontext, type, depthattr, cachetypeattr);
   }
   if (!strcasecmp(typestring, "HBM") || !strcasecmp(typestring, "MCDRAM")) {
     if (lcontext->only_hbm == -1)
       lcontext->only_hbm = 1;
     *typep = HWLOC_OBJ_NUMANODE;
-    depth = HWLOC_TYPE_DEPTH_NUMANODE;
+    depth = hwloc_get_type_depth(topology, HWLOC_OBJ_NUMANODE);
     return depth;
   }
 
@@ -183,12 +253,12 @@ hwloc_calc_parse_depth_prefix(struct hwloc_calc_location_context_s *lcontext,
       fprintf(stderr, "invalid type name %s\n", string);
     return -1;
   }
-  if (depth >= topodepth) {
+  if ((unsigned) depth >= topodepth) {
     if (verbose >= 0)
-      fprintf(stderr, "ignoring invalid depth %d\n", depth);
+      fprintf(stderr, "ignoring invalid depth %u\n", depth);
     return -1;
   }
-  *typep = HWLOC_OBJ_TYPE_NONE;
+  *typep = (hwloc_obj_type_t) -1;
   return depth;
 }
 
@@ -211,7 +281,7 @@ hwloc_calc_parse_range(const char *_string,
     len = strlen(_string);
   }
   if (len >= sizeof(string)) {
-    fprintf(stderr, "invalid range `%s', too long\n", _string);
+    fprintf(stderr, "invalid range `%s', too long\n", string);
     return -1;
   }
   memcpy(string, _string, len);
@@ -320,8 +390,7 @@ hwloc_calc_append_object_range(struct hwloc_calc_location_context_s *lcontext,
 					      &type);
     if (nextdepth == HWLOC_TYPE_DEPTH_UNKNOWN || nextdepth == HWLOC_TYPE_DEPTH_MULTIPLE)
       return -1;
-    /* we need an object with a cpuset, that's depth>=0 or memory */
-    if (nextdepth < 0 && nextdepth != HWLOC_TYPE_DEPTH_NUMANODE) {
+    if (nextdepth < 0) {
       if (verbose >= 0)
 	fprintf(stderr, "hierarchical location %s only supported with normal object types\n", string);
       return -1;
@@ -338,17 +407,19 @@ hwloc_calc_append_object_range(struct hwloc_calc_location_context_s *lcontext,
 
     obj = hwloc_calc_get_obj_inside_sets_by_depth(lcontext, rootcpuset, rootnodeset, depth, i);
     if (verbose > 0 || (!obj && verbose >= 0)) {
-      char *sc, *sn;
+      char *sc, *sn = NULL;
       hwloc_bitmap_asprintf(&sc, rootcpuset);
-      hwloc_bitmap_asprintf(&sn, rootnodeset);
+      if (rootnodeset)
+	hwloc_bitmap_asprintf(&sn, rootnodeset);
       if (obj)
-	printf("using object #%u depth %d below cpuset %s nodeset %s\n",
+	printf("using object #%u depth %u below cpuset %s nodeset %s\n",
 	       i, depth, sc, sn);
       else
-	fprintf(stderr, "object #%u depth %d below cpuset %s nodeset %s does not exist\n",
+	fprintf(stderr, "object #%u depth %u below cpuset %s nodeset %s does not exist\n",
 		i, depth, sc, sn);
       free(sc);
-      free(sn);
+      if (rootnodeset)
+	free(sn);
     }
     if (obj) {
       if (dot) {
@@ -496,7 +567,7 @@ hwloc_calc_process_location(struct hwloc_calc_location_context_s *lcontext,
   hwloc_topology_t topology = lcontext->topology;
   int verbose = lcontext->verbose;
   const char *sep = &arg[typelen];
-  hwloc_obj_type_t type = HWLOC_OBJ_TYPE_NONE;
+  hwloc_obj_type_t type = (hwloc_obj_type_t) -1;
   int depth;
 
   depth = hwloc_calc_parse_depth_prefix(lcontext,
@@ -505,9 +576,7 @@ hwloc_calc_process_location(struct hwloc_calc_location_context_s *lcontext,
   if (depth == HWLOC_TYPE_DEPTH_UNKNOWN || depth == HWLOC_TYPE_DEPTH_MULTIPLE) {
     return -1;
 
-  } else if (depth < 0 && depth != HWLOC_TYPE_DEPTH_NUMANODE) {
-    /* special object without cpusets */
-
+  } else if (depth < 0) {
     /* if we didn't find a depth but found a type, handle special cases */
     hwloc_obj_t obj = NULL;
 
@@ -531,18 +600,6 @@ hwloc_calc_process_location(struct hwloc_calc_location_context_s *lcontext,
       }
       if (verbose >= 0)
 	fprintf(stderr, "invalid OS device %s\n", sep+1);
-      return -1;
-
-    } else if (*sep == '=' && type == HWLOC_OBJ_MISC) {
-      /* try to match a Misc device name */
-      obj = hwloc_get_obj_by_type(topology, HWLOC_OBJ_MISC, 0);
-      while (obj) {
-	if (!strcmp(obj->name, sep+1))
-	  return hwloc_calc_append_iodev(lcontext, cbfunc, cbdata, obj);
-	obj = obj->next_cousin;
-      }
-      if (verbose >= 0)
-	fprintf(stderr, "invalid Misc object %s\n", sep+1);
       return -1;
 
     } else

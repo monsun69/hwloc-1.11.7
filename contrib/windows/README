@@ -8,6 +8,9 @@ That means your build may not be compatible with older systems.
 Enforce a specific toolset before building if needed.
 
 
+hwloc-assembler-remote is not built because it requires a hardwired
+path to hwloc-assembler and it uses ssh.
+
 hwloc-compress-dir not built because needs work.
 
 hwloc-gather-topology is Linux specific.

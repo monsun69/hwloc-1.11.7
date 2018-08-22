@@ -1,9 +1,9 @@
 .\" -*- nroff -*-
-.\" Copyright © 2010-2018 Inria.  All rights reserved.
+.\" Copyright © 2010-2017 Inria.  All rights reserved.
 .\" Copyright © 2010 Université of Bordeaux
 .\" Copyright © 2009-2010 Cisco Systems, Inc.  All rights reserved.
 .\" See COPYING in top-level directory.
-.TH HWLOC "7" "%HWLOC_DATE%" "%PACKAGE_VERSION%" "%PACKAGE_NAME%"
+.TH HWLOC "7" "#HWLOC_DATE#" "#PACKAGE_VERSION#" "#PACKAGE_NAME#"
 .SH NAME
 hwloc - General information about hwloc ("hardware locality").
 .
@@ -160,9 +160,9 @@ these tools will operation on each location individually and consecutively.
 .PP
 Some other tools internally manipulate objects as sets (e.g. hwloc-calc and hwloc-bind).
 They translate each input location into a hexidecimal location.
-When I/O or Misc objects are used, they are translated into the set
+When I/O objects are used, they are translated into the set
 of processors (or NUMA nodes) that are close to the given object
-(because I/O or Misc objects do not contain processors or NUMA nodes).
+(because I/O objects do not contain processors or NUMA nodes).
 .
 .PP
 If multiple locations are specified on the command-line (delimited by whitespace),
@@ -196,7 +196,7 @@ A NUMA node; a set of processors around memory which the processors
 can directly access.
 .
 If \fBhbm\fR is used instead of \fBnumanode\fR in locations,
-command-line tools only consider high-bandwidth memory nodes such as Intel Xeon Phi MCDRAM.
+command-line tools only consider high-bandwidth memory nodes such as KNL's MCDRAM.
 .
 .TP
 .B package
@@ -204,12 +204,10 @@ Typically a physical package or chip, that goes into a package,
 it is a grouping of one or more processors.
 .
 .TP
-.B l1cache ... l5cache
-A data (or unified) cache.
-.
-.TP
-.B l1icache ... l3icache
-An instruction cache.
+.B cache
+A cache memory. If several kinds of caches exist in the system,
+a specific one may be identified by its level (e.g. \fBl1cache\fR)
+and optionally by its type (e.g. \fBl1icache\fR).
 .
 .TP
 .B core
@@ -226,7 +224,12 @@ The smallest physical execution unit that hwloc recognizes.  For
 example, there may be multiple PUs on a core (e.g.,
 hardware threads).
 .PP
-\fBosdev\fR, \fBpcidev\fR, \fBbridge\fR, and \fBmisc\fR may also be used
+The additional
+.B system
+type can be used when several machines form an overall single system image
+(SSI), such as Kerrighed.
+.PP
+\fBosdev\fR, \fBpcidev\fR, and \fBbridge\fR may also be used
 to specify special devices although some of them have dedicated identification
 ways as explained in \fBLocation Specification\fR.
 .
