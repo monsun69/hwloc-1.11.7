@@ -22,6 +22,7 @@
 #include <sys/stat.h>
 #include <assert.h>
 #ifdef HAVE_TIME_T
+#define _POSIX_C_SOURCE 199309L
 #include <time.h>
 #endif
 
