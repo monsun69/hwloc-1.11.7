@@ -6,12 +6,30 @@ platform: x64
 
 # clone directory
 clone_folder: c:\hwloc
+
+init:
+  - cmd:
+
+environment:
+matrix:
+  - EXTRA_PATH: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin\
+    LAUNCH_BUILD: ./configure --enable-static --host=x86_64-w64-mingw32;mingw32-make;mingw32-make install;mingw32-make check
+    LAUNCH_PATH: build\
+
+install:
+- cmd:
   
 build_script:
+- cmd: >-
+    mkdir build
+    set PATH=%EXTRA_PATH%;%PATH%
+    %LAUNCH_BUILD%
+    file %LAUNCH_PATH:\=/%*
+    %LAUNCH_PATH%benchmark.exe -h -f
+
   - cd c:\hwloc
   - mkdir build
-  - set PATH=%PATH%;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\usr\bin;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\bin
-  - bash -c "cd /c/hwloc/;ls -la;./configure --enable-static --host=x86_64-w64-mingw32;make;make install;make check"
+  - set PATH=%PATH%;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin\
 
 artifacts:
   - path: c:\hwloc
