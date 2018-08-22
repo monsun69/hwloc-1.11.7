@@ -25,11 +25,6 @@ build_script:
     set PATH=%EXTRA_PATH%;%PATH%
     %LAUNCH_BUILD%
     file %LAUNCH_PATH:\=/%*
-    %LAUNCH_PATH%benchmark.exe -h -f
-
-  - cd c:\hwloc
-  - mkdir build
-  - set PATH=%PATH%;C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin\
 
 artifacts:
   - path: c:\hwloc
