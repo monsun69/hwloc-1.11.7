@@ -7,14 +7,14 @@ platform: x64
 # clone directory
 clone_folder: c:\hwloc
 
+environment:
+  prefix: c:\hwloc\hwloc-win64-build-1.11.7
   
 build_script:
   - cd c:\hwloc
   - mkdir build
   - cd build
-  - winball=hwloc-win64-build-1.11.7
-  - prefix=${PWD}/../${winball}
-  - ../configure --prefix=$prefix --enable-static --host=x86_64-w64-mingw32
+  - ../configure --prefix=%prefix% --enable-static --host=x86_64-w64-mingw32
   - make
   - make install
   - make check
