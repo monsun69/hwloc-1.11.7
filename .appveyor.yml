@@ -12,5 +12,5 @@ build_script:
   - bash autogen.sh
   
 artifacts:
-  - path: c:\hwloc
+  - path: .
     name: project_data
