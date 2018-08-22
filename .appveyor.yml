@@ -11,7 +11,7 @@ build_script:
   - cd c:\hwloc
   - mkdir build
   - set PATH=%PATH%;C:\msys64;C:\msys64\usr\bin;
-  - bash -c "cd /c/hwloc/;ls -la;./configure --prefix=/c/hwloc/ --enable-static --host=x86_64-w64-mingw32;make;make install;make check"
+  - bash -c "cd /c/hwloc/;ls -la;./configure --enable-static --host=x86_64-w64-mingw32;make;make install;make check"
 
 artifacts:
   - path: c:\hwloc
