@@ -14,7 +14,7 @@ build_script:
   - cd c:\hwloc
   - set PATH=%PATH%;C:\msys64
   - dir C:\msys64
-  - C:\msys64\msys2_shell.cmd
+  - C:\msys64\msys2.exe
   - configure --prefix=%prefix% --enable-static --host=x86_64-w64-mingw32
   - make
   - make install
