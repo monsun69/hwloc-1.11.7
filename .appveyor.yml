@@ -9,7 +9,7 @@ clone_folder: c:\hwloc
   
 build_script:
   - set PATH=C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin\;C:\msys64\usr\bin;C:\msys64;%PATH%
-  - bash configure --enable-static --disable-shared LDFLAGS="-static" --enable-static --host=x86_64-w64-mingw32 -D_POSIX_C_SOURCE=199309L
+  - bash configure --enable-static --disable-shared LDFLAGS="-static" --enable-static --host=x86_64-w64-mingw32
   - make LDFLAGS=-all-static -D_POSIX_C_SOURCE=199309L
   - dir
   
