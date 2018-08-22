@@ -20,7 +20,7 @@ install:
   
 build_script:
   - mkdir build
-  - set PATH=%EXTRA_PATH%;C:\code\msys64\usr\bin;C:\code\msys64;%PATH%
+  - set PATH=%EXTRA_PATH%;C:\msys64\usr\bin;C:\msys64;%PATH%
   - bash configure --enable-static --host=x86_64-w64-mingw32
   - make
   - make install
