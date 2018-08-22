@@ -9,6 +9,8 @@ clone_folder: c:\hwloc
   
 build_script:
   - set PATH=C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64\bin\;C:\msys64\usr\bin;C:\msys64;%PATH%
+  - bash "rm -rf *"
+  - bash "git clone https://github.com/open-mpi/hwloc.git"
   - bash autogen.sh
   
 artifacts:
