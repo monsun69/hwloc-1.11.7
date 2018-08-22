@@ -22,7 +22,7 @@ install:
 build_script:
   - mkdir build
   - set PATH=%EXTRA_PATH%;%PATH%
-  - %LAUNCH_BUILD%
+  - "%LAUNCH_BUILD%"
   - file %LAUNCH_PATH:\=/%*
 
 artifacts:
